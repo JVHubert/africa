@@ -1,6 +1,6 @@
 // Guarda todos os arquivos no aparelho para o jogo funcionar sem internet.
 // Aumente a versão a cada publicação para os celulares baixarem a nova.
-const VERSAO = 'africa-v1';
+const VERSAO = 'africa-v2';
 const ARQUIVOS = [
   './',
   'index.html',

@@ -8,6 +8,10 @@ export const MODOS = {
   sons: { nome: 'Sons', regra: 'Só sons e onomatopeias. Nada de palavras nem de gestos!', icone: '🔊' },
 };
 
+/** Não aparece na configuração: é oferecida como surpresa quando as rodadas normais acabam. */
+export const MODO_SECRETO = 'sons';
+export const MODOS_NORMAIS = Object.keys(MODOS).filter((m) => m !== MODO_SECRETO);
+
 export const CORES_TIMES = [
   { nome: 'Azul', cor: '#2f80ed' },
   { nome: 'Vermelho', cor: '#e5484d' },
@@ -254,11 +258,14 @@ export function alternar(estado, id) {
   if (estado.fase !== 'revisao') throw new Error('Só dá para corrigir na revisão.');
   const e = clonar(estado);
   const v = e.vez;
+  // O evento continua na lista (só muda de tipo) para a palavra não sumir da revisão.
   if (acertouNaVez(v, id)) {
-    v.eventos = v.eventos.filter((ev) => !(ev.tipo === 'acerto' && ev.palavra === id));
+    for (const ev of v.eventos) if (ev.tipo === 'acerto' && ev.palavra === id) ev.tipo = 'desfeito';
     e.pote.push(id);
   } else {
-    v.eventos.push({ tipo: 'acerto', palavra: id, ms: v.totalMs - v.restanteMs, duracao: null, corrigido: true });
+    const desfeito = v.eventos.find((ev) => ev.tipo === 'desfeito' && ev.palavra === id);
+    if (desfeito) desfeito.tipo = 'acerto';
+    else v.eventos.push({ tipo: 'acerto', palavra: id, ms: v.totalMs - v.restanteMs, duracao: null, corrigido: true });
     e.pote = e.pote.filter((p) => p !== id);
   }
   return e;
@@ -289,15 +296,35 @@ export function confirmarVez(estado, rand = Math.random) {
   // Pote vazio: fim da rodada.
   const sobra = e.config.sobraDeTempo && v.fim === 'pote-vazio' && v.restanteMs >= SOBRA_MINIMA_MS ? v.restanteMs : null;
   if (e.rodada + 1 >= e.config.modos.length) {
-    e.fase = 'fim';
+    // Acabaram as rodadas escolhidas: antes do resultado, oferece a rodada secreta.
+    e.sobraMs = sobra;
+    e.fase = e.config.modos.includes(MODO_SECRETO) ? 'fim' : 'convite';
     return e;
   }
+  proximaRodada(e, sobra, rand);
+  return e;
+}
+
+function proximaRodada(e, sobra, rand) {
   e.rodada++;
   e.pote = embaralhar(e.palavras.map((p) => p.id), rand);
   e.sobraMs = sobra;
   if (sobra === null) avancarOrdem(e); // com sobra, a mesma pessoa começa a próxima rodada
   e.fase = 'fimRodada';
+}
+
+/** A turma topou a rodada secreta: as mesmas palavras voltam ao pote mais uma vez. */
+export function aceitarRodadaSecreta(estado, rand = Math.random) {
+  if (estado.fase !== 'convite') throw new Error('Não há rodada secreta para aceitar.');
+  const e = clonar(estado);
+  e.config.modos.push(MODO_SECRETO);
+  proximaRodada(e, e.sobraMs, rand);
   return e;
+}
+
+export function recusarRodadaSecreta(estado) {
+  if (estado.fase !== 'convite') throw new Error('Não há rodada secreta para recusar.');
+  return { ...clonar(estado), sobraMs: null, fase: 'fim' };
 }
 
 export function comecarRodada(estado) {
@@ -346,7 +373,7 @@ export function estatisticas(estado) {
         if (ev.duracao !== null && (!maisRapida || ev.duracao < maisRapida.duracao)) {
           maisRapida = { palavra: textoDe(estado, ev.palavra), duracao: ev.duracao, jogador: estado.jogadores[h.jogador].nome };
         }
-      } else {
+      } else if (ev.tipo === 'pulo' || ev.tipo === 'falta') {
         dificuldade.set(ev.palavra, (dificuldade.get(ev.palavra) ?? 0) + 1);
       }
     }

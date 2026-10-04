@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   CONFIG_PADRAO, acertou, alternar, comecarRodada, confirmarVez, duracaoEstimada, entregarPalavras,
   estatisticas, explicadorAtual, falta, iniciarVez, jaNoPote, novoJogo, palavrasDaVez, placar, pular,
-  revanche, sortearTimes, tempoEsgotado, validar, vencedores,
+  revanche, sortearTimes, tempoEsgotado, validar, vencedores, aceitarRodadaSecreta, recusarRodadaSecreta,
 } from '../jogo.js';
 
 /** Gerador previsível (mulberry32) para os sorteios darem sempre o mesmo resultado. */
@@ -155,6 +155,7 @@ test('jogo completo: 3 rodadas, placar, vencedor e curiosidades', () => {
   let e = jogoPronto({ sobraDeTempo: false });
   let vezes = 0;
   while (e.fase !== 'fim') {
+    if (e.fase === 'convite') { e = recusarRodadaSecreta(e); break; }
     if (e.fase === 'fimRodada') e = comecarRodada(e);
     e = iniciarVez(e);
     // Time Azul acerta 3 por vez; Vermelho acerta 2 e pula uma.
@@ -189,4 +190,49 @@ test('modos opcionais: só com a rodada de sons', () => {
   for (let i = 1; i <= 8; i++) e = acertou(e, i * 1000);
   e = confirmarVez(e);
   assert.equal(e.fase, 'fim');
+});
+
+test('revisão: desmarcar um acerto não tira a palavra da lista', () => {
+  let e = iniciarVez(jogoPronto());
+  const a = e.vez.atual;
+  e = acertou(e, 1000);
+  const b = e.vez.atual;
+  e = acertou(e, 2000);
+  e = tempoEsgotado(e);
+  e = alternar(e, a);
+  let lista = palavrasDaVez(e);
+  assert.deepEqual(lista.slice(0, 2).map((p) => [p.id, p.acertou]), [[a, false], [b, true]]);
+  e = alternar(e, a); // volta a ser acerto, com o tempo original
+  lista = palavrasDaVez(e);
+  assert.deepEqual(lista.slice(0, 2).map((p) => [p.id, p.acertou]), [[a, true], [b, true]]);
+  assert.ok(!e.pote.includes(a));
+  e = alternar(e, a);
+  e = confirmarVez(e);
+  assert.equal(placar(e)[0].total, 1);
+  assert.equal(estatisticas(e).maisDificil, null); // desfazer não conta como palavra difícil
+});
+
+/** Joga todas as rodadas acertando tudo na primeira vez de cada uma. */
+function jogarRodadas(e) {
+  while (e.fase === 'passagem' || e.fase === 'fimRodada') {
+    if (e.fase === 'fimRodada') e = comecarRodada(e);
+    e = iniciarVez(e);
+    while (e.fase === 'vez') e = acertou(e, 1000);
+    e = confirmarVez(e);
+  }
+  return e;
+}
+
+test('rodada secreta: oferecida só no fim da 3ª rodada', () => {
+  let e = jogarRodadas(jogoPronto({ sobraDeTempo: false }));
+  assert.equal(e.fase, 'convite');
+  assert.equal(recusarRodadaSecreta(e).fase, 'fim');
+  e = aceitarRodadaSecreta(e);
+  assert.equal(e.fase, 'fimRodada');
+  assert.deepEqual(e.config.modos, ['explicar', 'uma-palavra', 'mimica', 'sons']);
+  assert.equal(e.pote.length, 8);
+  e = jogarRodadas(e);
+  assert.equal(e.fase, 'fim');
+  assert.equal(placar(e)[0].porRodada.length, 4);
+  assert.equal(placar(e).reduce((s, l) => s + l.total, 0), 32);
 });

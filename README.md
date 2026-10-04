@@ -4,7 +4,7 @@ O jogo **África** (também conhecido como Monikers, Fishbowl ou Salad Bowl) num
 
 **Jogar agora:** https://jvhubert.github.io/africa/
 
-- 3 rodadas com as mesmas palavras: **explicar**, **uma palavra só** e **mímica**, mais uma quarta opcional de **sons**.
+- 3 rodadas com as mesmas palavras: **explicar**, **uma palavra só** e **mímica**, e uma rodada secreta oferecida como surpresa quando a 3ª acaba.
 - Times (2 a 4) sorteados ou montados à mão; duplas são times de 2.
 - Palavras por pessoa e tempo de cada vez ajustáveis (padrão: 10 palavras, 60 s).
 - Corretor que sugere a grafia certa ("marquiz" → "marquise") sem impedir nomes próprios.

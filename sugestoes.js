@@ -1,51 +1,70 @@
-// Banco do botão "Me dá uma ideia", para quem trava na hora de escrever.
+// Banco do botão "Me dá uma ideia". De propósito, só coisas pouco usuais: com palavras
+// do dia a dia ("banana", "tesoura") o jogo fica fácil demais.
 export const SUGESTOES = {
-  'Objetos': [
-    'Guarda-chuva', 'Geladeira', 'Escova de dente', 'Controle remoto', 'Ventilador', 'Liquidificador',
-    'Travesseiro', 'Óculos de sol', 'Panela de pressão', 'Cadeado', 'Tesoura', 'Espelho', 'Vassoura',
-    'Ferro de passar', 'Mochila', 'Lanterna', 'Relógio', 'Chinelo', 'Abridor de garrafa', 'Varal',
-    'Secador de cabelo', 'Martelo', 'Bússola', 'Telescópio', 'Peneira', 'Rede de dormir', 'Marquise',
-    'Extintor', 'Carimbo', 'Apito', 'Microondas', 'Saca-rolhas', 'Esponja', 'Fita adesiva', 'Ampulheta',
+  'Objetos curiosos': [
+    'Ampulheta', 'Astrolábio', 'Sextante', 'Monóculo', 'Gramofone', 'Mimeógrafo', 'Metrônomo', 'Diapasão',
+    'Periscópio', 'Estetoscópio', 'Caleidoscópio', 'Escafandro', 'Pergaminho', 'Catapulta', 'Alambique',
+    'Bumerangue', 'Guilhotina', 'Ábaco', 'Telégrafo', 'Tamagotchi', 'Disquete', 'Fita cassete', 'Pager',
+    'Abajur', 'Clarabóia', 'Marquise', 'Gárgula', 'Vitral', 'Totem', 'Espantalho', 'Cata-vento',
+    'Filtro dos sonhos', 'Bola de cristal', 'Lâmpada mágica', 'Tapete voador', 'Pé de cabra', 'Saca-rolhas',
   ],
-  'Comidas': [
-    'Pão de queijo', 'Brigadeiro', 'Feijoada', 'Pipoca', 'Coxinha', 'Pastel', 'Churrasco', 'Açaí',
-    'Sushi', 'Lasanha', 'Pudim', 'Tapioca', 'Pamonha', 'Cuscuz', 'Moqueca', 'Farofa', 'Quindim',
-    'Pizza', 'Hambúrguer', 'Cachorro-quente', 'Melancia', 'Abacaxi', 'Picolé', 'Algodão-doce',
-    'Paçoca', 'Ovo de Páscoa', 'Bolo de cenoura', 'Caldo de cana', 'Chimarrão', 'Rapadura',
+  'Instrumentos e transportes': [
+    'Berimbau', 'Atabaque', 'Cuíca', 'Gaita de foles', 'Castanholas', 'Xilofone', 'Theremin', 'Harpa',
+    'Tuba', 'Didgeridoo', 'Zepelim', 'Dirigível', 'Teleférico', 'Funicular', 'Riquixá', 'Gôndola',
+    'Catamarã', 'Jangada', 'Pedalinho', 'Monociclo', 'Trenó', 'Balão de ar quente', 'Hovercraft',
   ],
-  'Animais': [
-    'Hipopótamo', 'Ornitorrinco', 'Bicho-preguiça', 'Tamanduá', 'Pinguim', 'Girafa', 'Polvo', 'Camaleão',
-    'Tartaruga', 'Morcego', 'Pavão', 'Jacaré', 'Canguru', 'Vaga-lume', 'Cavalo-marinho', 'Tucano',
-    'Capivara', 'Coruja', 'Lhama', 'Formiga', 'Golfinho', 'Esquilo', 'Galinha', 'Mico-leão-dourado',
+  'Comidas incomuns': [
+    'Vatapá', 'Sarapatel', 'Maniçoba', 'Tacacá', 'Escargot', 'Fondue', 'Tiramisù', 'Caviar', 'Jiló',
+    'Baba de moça', 'Petit gâteau', 'Quiabo', 'Pequi', 'Ratatouille', 'Shimeji', 'Kombucha', 'Wasabi',
+    'Buchada de bode', 'Dobradinha', 'Pé de moleque', 'Cocada', 'Rabanada', 'Mocotó', 'Panetone',
+  ],
+  'Bichos esquisitos': [
+    'Ornitorrinco', 'Axolote', 'Pangolim', 'Narval', 'Baiacu', 'Louva-a-deus', 'Suricato', 'Peixe-boi',
+    'Tatu-bola', 'Quati', 'Urutau', 'Água-viva', 'Bicho-pau', 'Tamanduá-bandeira', 'Cavalo-marinho',
+    'Bicho-preguiça', 'Ouriço-do-mar', 'Camaleão', 'Polvo', 'Lhama', 'Morsa', 'Ariranha', 'Jabuti',
   ],
   'Lugares': [
-    'Torre Eiffel', 'Cristo Redentor', 'Pirâmides do Egito', 'Disney', 'Amazônia', 'Pantanal',
-    'Lençóis Maranhenses', 'Fernando de Noronha', 'Muralha da China', 'Estátua da Liberdade',
-    'Cataratas do Iguaçu', 'Maracanã', 'Polo Norte', 'Deserto do Saara', 'Veneza', 'Hospital',
-    'Rodoviária', 'Padaria', 'Cemitério', 'Biblioteca', 'Aeroporto', 'Feira livre', 'Praia', 'Circo',
+    'Machu Picchu', 'Stonehenge', 'Atlântida', 'Chernobyl', 'Triângulo das Bermudas', 'Ilha de Páscoa',
+    'Taj Mahal', 'Vaticano', 'Ouro Preto', 'Monte Roraima', 'Lençóis Maranhenses', 'Capadócia',
+    'Torre de Pisa', 'Área 51', 'Hollywood', 'Las Vegas', 'Muro de Berlim', 'Coliseu', 'Polo Sul',
+    'Fernando de Noronha', 'Chapada Diamantina', 'Deserto do Atacama', 'Monte Everest', 'Nárnia',
   ],
-  'Famosos e personagens': [
-    'Pelé', 'Xuxa', 'Silvio Santos', 'Ayrton Senna', 'Neymar', 'Anitta', 'Faustão', 'Gisele Bündchen',
-    'Papai Noel', 'Saci-Pererê', 'Mônica', 'Cebolinha', 'Chaves', 'Seu Madruga', 'Harry Potter',
-    'Bob Esponja', 'Mickey Mouse', 'Batman', 'Homem-Aranha', 'Super Mario', 'Pikachu', 'Shrek',
-    'Branca de Neve', 'Albert Einstein', 'Mona Lisa', 'Tiradentes', 'Dom Pedro I', 'Elvis Presley',
-    'Michael Jackson', 'Cleópatra', 'Napoleão', 'Charles Chaplin', 'Coelhinho da Páscoa', 'Cuca',
+  'Gente famosa': [
+    'Santos Dumont', 'Frida Kahlo', 'Leonardo da Vinci', 'Galileu', 'Mozart', 'Tarsila do Amaral',
+    'Carmen Miranda', 'Chacrinha', 'Oscar Niemeyer', 'Lampião', 'Zumbi dos Palmares', 'Tim Maia',
+    'Raul Seixas', 'Dercy Gonçalves', 'Hebe Camargo', 'Cleópatra', 'Napoleão', 'Charles Chaplin',
+    'Marilyn Monroe', 'Salvador Dalí', 'Freud', 'Nostradamus', 'Tutancâmon', 'Pablo Escobar',
+    'Gandhi', 'Elvis Presley', 'Rita Lee', 'Clarice Lispector', 'Machado de Assis', 'Sherlock Holmes',
   ],
-  'Filmes, músicas e TV': [
-    'Titanic', 'Rei Leão', 'Frozen', 'Toy Story', 'Procurando Nemo', 'Star Wars', 'Tubarão',
-    'O Auto da Compadecida', 'Cidade de Deus', 'Sítio do Picapau Amarelo', 'Malhação', 'Big Brother',
-    'Jornal Nacional', 'Novela', 'Carnaval', 'Garota de Ipanema', 'Ilariê', 'Macarena', 'Copa do Mundo',
+  'Personagens e lendas': [
+    'Saci-Pererê', 'Curupira', 'Boitatá', 'Mula sem cabeça', 'Iara', 'Cuca', 'Boto cor-de-rosa',
+    'Pé-grande', 'Chupa-cabra', 'Medusa', 'Minotauro', 'Ciclope', 'Fênix', 'Esfinge', 'Rei Arthur',
+    'Robin Hood', 'Pinóquio', 'Dom Quixote', 'Drácula', 'Frankenstein', 'Gasparzinho', 'Smurf',
+    'Seu Madruga', 'Chapolin', 'Magali', 'Visconde de Sabugosa', 'Emília', 'Gollum', 'Yoda',
   ],
-  'Ações e situações': [
-    'Pular corda', 'Trocar pneu', 'Fazer bolo', 'Pescar', 'Andar de bicicleta', 'Tomar banho de chuva',
-    'Ronco', 'Soluço', 'Espirro', 'Engarrafamento', 'Mudança de casa', 'Casamento', 'Aniversário',
-    'Dor de dente', 'Arrumar a mala', 'Esconde-esconde', 'Amarelinha', 'Cabo de guerra', 'Selfie',
-    'Fila de banco', 'Ressaca', 'Sonambulismo', 'Lavar louça', 'Tirar foto', 'Montar barraca',
+  'Filmes e TV': [
+    'O Auto da Compadecida', 'Cidade de Deus', 'Central do Brasil', 'Tropa de Elite', 'Matrix', 'Tubarão',
+    'E.T.', 'O Poderoso Chefão', 'Psicose', 'Titanic', 'Jurassic Park', 'De Volta para o Futuro',
+    'O Mágico de Oz', 'Castelo Rá-Tim-Bum', 'Sítio do Picapau Amarelo', 'Os Trapalhões', 'TV Pirata',
+    'A Praça é Nossa', 'Roque Santeiro', 'Vale a Pena Ver de Novo', 'Domingão', 'Show do Milhão',
   ],
-  'Profissões e esportes': [
-    'Astronauta', 'Bombeiro', 'Dentista', 'Palhaço', 'Mágico', 'Carteiro', 'Salva-vidas', 'Detetive',
-    'Pirata', 'Maestro', 'Goleiro', 'Basquete', 'Surfe', 'Capoeira', 'Xadrez', 'Boliche', 'Sumô',
-    'Balé', 'Paraquedismo', 'Esgrima', 'Pingue-pongue', 'Maratona', 'Skate', 'Vôlei de praia',
+  'Ideias e expressões': [
+    'Saudade', 'Déjà vu', 'Nostalgia', 'Procrastinação', 'Efeito dominó', 'Lua de mel', 'Bode expiatório',
+    'Calcanhar de Aquiles', 'Cavalo de Troia', 'Elefante branco', 'Torre de Babel', 'Caixa de Pandora',
+    'Mau-olhado', 'Pé-de-meia', 'Vaquinha', 'Trava-língua', 'Pegadinha', 'Amigo secreto', 'Lei de Murphy',
+    'Ovelha negra', 'Sexto sentido', 'Fim do mundo', 'Efeito borboleta', 'Inferno astral', 'Ressaca moral',
+  ],
+  'Situações e sensações': [
+    'Torcicolo', 'Caxumba', 'Soluço', 'Insônia', 'Claustrofobia', 'Bocejo', 'Arrepio', 'Cócegas', 'Câimbra',
+    'Vertigem', 'Sonambulismo', 'Miragem', 'Eclipse', 'Aurora boreal', 'Estalactite', 'Iceberg', 'Tsunami',
+    'Quermesse', 'Procissão', 'Chá de bebê', 'Despedida de solteiro', 'Malabarismo', 'Ventriloquia',
+    'Hipnose', 'Abdução', 'Mudança de fuso horário', 'Bodas de ouro', 'Simpatia de Santo Antônio',
+  ],
+  'Profissões e esportes raros': [
+    'Taxidermista', 'Apicultor', 'Ourives', 'Sommelier', 'Equilibrista', 'Mímico', 'Ventríloquo',
+    'Engraxate', 'Leiloeiro', 'Faroleiro', 'Domador de leões', 'Dublê', 'Curling', 'Polo aquático',
+    'Nado sincronizado', 'Esgrima', 'Hipismo', 'Tai chi chuan', 'Sumô', 'Rapel', 'Parkour', 'Tirolesa',
+    'Arco e flecha', 'Bocha', 'Xadrez', 'Paraquedismo', 'Capoeira', 'Pole dance',
   ],
 };
 

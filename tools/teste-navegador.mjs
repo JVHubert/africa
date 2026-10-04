@@ -52,6 +52,8 @@ try {
   await clicar('tempo', '[data-s="5"]');
   const resumo = await page.$eval('.estimativa', (el) => el.textContent);
   confere('estimativa mostra 12 palavras', resumo.includes('12 palavras'), resumo.trim().replace(/\s+/g, ' '));
+  const rodadas = await page.$$eval('[data-campo=modo]', (l) => l.map((x) => x.dataset.modo));
+  confere('a rodada de sons não aparece na configuração', !rodadas.includes('sons'), JSON.stringify(rodadas));
   await foto('02-config');
   await clicar('comecar');
 
@@ -96,6 +98,8 @@ try {
 
   // ---- Partida
   let recarregou = false;
+  let testouRevisao = false;
+  let aceitouSecreta = false;
   let vezes = 0;
   const vistas = new Set();
   while ((await tela()) !== 'fim' && vezes < 60) {
@@ -121,18 +125,31 @@ try {
       }
       await page.waitForFunction(() => document.getElementById('app').dataset.tela !== 'vez', { timeout: 10000 });
     } else if (t === 'revisao') {
+      if (!testouRevisao && (await page.$('.lista-revisao button.ok'))) {
+        // Desmarcar um acerto não pode sumir com a palavra da lista.
+        testouRevisao = true;
+        const antes = await page.$$eval('.lista-revisao button', (b) => b.length);
+        await page.click('.lista-revisao button.ok');
+        const depois = await page.$$eval('.lista-revisao button', (b) => b.length);
+        confere('desmarcar acerto mantém a palavra na revisão', antes === depois, `${antes} → ${depois}`);
+        await page.click('.lista-revisao button:not(.ok)');
+      }
       await clicar('confirmar');
       await esperar(650);
+    } else if (t === 'convite') {
+      confere('rodada secreta é oferecida no fim da rodada 3', !aceitouSecreta);
+      aceitouSecreta = true;
+      await clicar('aceitar-secreta');
     } else if (t === 'fimRodada') {
       await clicar('comecar-rodada');
     } else {
       throw new Error(`tela inesperada: ${t}`);
     }
   }
-  confere('passou por todas as telas do jogo', ['passagem', 'vez', 'revisao', 'fimRodada'].every((t) => vistas.has(t)), [...vistas].join(', '));
+  confere('passou por todas as telas do jogo', ['passagem', 'vez', 'revisao', 'fimRodada', 'convite'].every((t) => vistas.has(t)), [...vistas].join(', '));
   await foto('06-fim');
   const placar = await page.$$eval('.placar tbody tr', (linhas) => linhas.map((l) => Number(l.querySelector('td:last-child').textContent)));
-  confere('placar final soma 36 (12 palavras × 3 rodadas)', placar.reduce((a, b) => a + b, 0) === 36, JSON.stringify(placar));
+  confere('placar final soma 48 (12 palavras × 4 rodadas)', placar.reduce((a, b) => a + b, 0) === 48, JSON.stringify(placar));
   const titulo = await page.$eval('.fim h2', (el) => el.textContent);
   confere('mostra o vencedor', /venceu|Empate/.test(titulo), titulo);
   confere('sem erros de JavaScript', errosJs.length === 0, errosJs.join(' | '));

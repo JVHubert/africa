@@ -348,3 +348,19 @@ main.acabando .segundos { animation: piscar .5s steps(2) infinite; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---------- Rodada secreta ---------- */
+
+.convite h2 { text-align: center; }
+.segredo {
+  text-align: center;
+  background: linear-gradient(135deg, #2b1f45, #4a2a6b);
+  color: #fff;
+  border-radius: var(--raio);
+  padding: 20px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.segredo .cadeado { font-size: 3rem; line-height: 1; animation: pular 1s ease-in-out infinite alternate; }
+.segredo h3 { font-size: 1.35rem; }
+.segredo .regra { background: rgb(255 255 255 / .14); padding: 10px 14px; border-radius: 12px; font-weight: 700; }
+.convite .acoes { margin-top: auto; }

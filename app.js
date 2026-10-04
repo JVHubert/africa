@@ -115,6 +115,7 @@ function render() {
     vez: telaVez,
     revisao: telaRevisao,
     fimRodada: telaFimRodada,
+    convite: telaConvite,
     fim: telaFim,
   }[estado.fase]();
   $app.innerHTML = html;
@@ -215,10 +216,10 @@ function telaConfig() {
 
     <div class="cartao">
       <h3>Rodadas</h3>
-      ${Object.entries(MODOS).map(([id, m], i) => `
+      ${J.MODOS_NORMAIS.map((id) => [id, MODOS[id]]).map(([id, m], i) => `
       <label class="alternador">
         <input type="checkbox" data-campo="modo" data-modo="${id}" ${config.modos.includes(id) ? 'checked' : ''}>
-        <span class="texto"><b>${m.icone} ${m.nome}</b><small>${m.regra}${id === 'sons' ? ' Opcional e bem diferentona!' : ''}</small></span>
+        <span class="texto"><b>${m.icone} ${m.nome}</b><small>${m.regra}</small></span>
         <span class="trilho"></span>
       </label>`).join('')}
     </div>
@@ -269,7 +270,7 @@ function telaEscrita() {
       <span class="contador ${cheio ? 'cheio' : ''}">${minhas.length}/${n}</span>
     </header>
     ${cheio ? '<p class="feito">Tudo certo! Confira a lista e toque em <b>Pronto</b>.</p>' : `
-    <p class="dica">Vale tudo: objetos, pessoas famosas, filmes, lugares, até gente da família.</p>
+    <p class="dica">Vale tudo: objetos, famosos, filmes, lugares, gente da família. Fuja do óbvio: quanto menos comum a palavra, mais divertido fica!</p>
     <form id="form-palavra" class="campo-palavra" autocomplete="off">
       <input id="palavra" maxlength="40" placeholder="Ex.: basquete, Torre Eiffel…" enterkeyhint="done" autocomplete="off" aria-label="Palavra">
       <button class="btn primario" type="submit">Adicionar</button>
@@ -368,7 +369,7 @@ function tabelaPlacar() {
   <table class="placar">
     <thead><tr><th>Time</th>${modos.map((m) => `<th title="${MODOS[m].nome}">${MODOS[m].icone}</th>`).join('')}<th>Total</th></tr></thead>
     <tbody>${p.map((l) => `
-      <tr style="--cor:${l.cor}"><td><span class="nome-time"><i></i>${esc(l.nome)}</span></td>${l.porRodada.map((n, r) => `<td>${r < estado.rodada || estado.fase === 'fim' ? n : '–'}</td>`).join('')}<td><b>${l.total}</b></td></tr>`).join('')}
+      <tr style="--cor:${l.cor}"><td><span class="nome-time"><i></i>${esc(l.nome)}</span></td>${l.porRodada.map((n, r) => `<td>${r < estado.rodada || ['fim', 'convite'].includes(estado.fase) ? n : '–'}</td>`).join('')}<td><b>${l.total}</b></td></tr>`).join('')}
     </tbody>
   </table>`;
 }
@@ -390,6 +391,27 @@ function telaFimRodada() {
     </div>
     <p class="info">Começa: <b>${esc(quem.nome)}</b> (Time ${nomeTime(quem.time)})${estado.sobraMs ? `, com os ${segundos(estado.sobraMs)} s que sobraram` : ''}</p>
     <button class="btn primario grande" data-acao="comecar-rodada">Começar rodada ${estado.rodada + 1}</button>
+  </section>`;
+}
+
+function telaConvite() {
+  const modo = MODOS[J.MODO_SECRETO];
+  return `
+  <section class="tela convite">
+    <header class="topo"><span class="selo">Fim da rodada ${estado.rodada + 1}</span>${botaoMenu()}</header>
+    <h2>Fim da rodada ${estado.rodada + 1}! 🎉</h2>
+    ${tabelaPlacar()}
+    <div class="segredo">
+      <div class="cadeado">🤫</div>
+      <h3>Psiu… existe uma rodada secreta!</h3>
+      <p>As mesmas palavras voltam para o pote mais uma vez, agora com a regra mais difícil de todas:</p>
+      <p class="regra">${modo.icone} ${modo.regra}</p>
+      <p>Topam?</p>
+    </div>
+    <div class="acoes">
+      <button class="btn primario grande" data-acao="aceitar-secreta">Bora! ${modo.icone}</button>
+      <button class="btn secundario" data-acao="recusar-secreta">Não, ver o resultado</button>
+    </div>
   </section>`;
 }
 
@@ -434,7 +456,7 @@ const REGRAS = `
   <p>Cada pessoa escreve palavras secretas, que vão para o pote. Os times se revezam: alguém do time pega o celular e tenta fazer o próprio time adivinhar o máximo de palavras antes do tempo acabar. Cada acerto vale 1 ponto.</p>
   <p>Quando o pote esvazia, a rodada acaba e <b>todas as palavras voltam</b> para a rodada seguinte, com uma regra mais difícil:</p>
   <ol class="lista-regras">
-    ${Object.values(MODOS).map((m) => `<li><b>${m.icone} ${m.nome}</b>: ${m.regra}</li>`).join('')}
+    ${J.MODOS_NORMAIS.map((id) => MODOS[id]).map((m) => `<li><b>${m.icone} ${m.nome}</b>: ${m.regra}</li>`).join('')}
   </ol>
   <p>Dica: preste atenção na rodada 1. As dicas que funcionaram nela salvam o time nas rodadas seguintes!</p>
   <p><b>Falta</b> é quando quem explica quebra a regra (falou a palavra, usou mais de uma palavra na rodada 2, fez som na mímica). A palavra volta para o pote sem ponto.</p>
@@ -646,7 +668,7 @@ const acoes = {
   },
   comecar() {
     const jogadores = rascunho.jogadores.filter((j) => j.nome.trim());
-    const config = { ...rascunho.config, modos: Object.keys(MODOS).filter((m) => rascunho.config.modos.includes(m)) };
+    const config = { ...rascunho.config, modos: J.MODOS_NORMAIS.filter((m) => rascunho.config.modos.includes(m)) };
     ui.erros = J.validar({ jogadores, nTimes: rascunho.nTimes, config });
     if (ui.erros.length) {
       render();
@@ -733,6 +755,8 @@ const acoes = {
     if (estado.fase === 'fim') sons.vitoria();
   },
   'comecar-rodada'() { atualizar(J.comecarRodada(estado)); },
+  'aceitar-secreta'() { atualizar(J.aceitarRodadaSecreta(estado)); window.scrollTo(0, 0); },
+  'recusar-secreta'() { atualizar(J.recusarRodadaSecreta(estado)); window.scrollTo(0, 0); sons.vitoria(); },
   revanche() {
     estado = J.revanche(estado);
     guardar(CH.escrita, null);
@@ -886,7 +910,7 @@ $app.addEventListener('change', (ev) => {
   if (el.dataset.campo === 'modo') {
     const modos = new Set(rascunho.config.modos);
     if (el.checked) modos.add(el.dataset.modo); else modos.delete(el.dataset.modo);
-    rascunho.config.modos = Object.keys(MODOS).filter((m) => modos.has(m));
+    rascunho.config.modos = J.MODOS_NORMAIS.filter((m) => modos.has(m));
     salvarRascunho();
     render();
   } else if (el.dataset.campo === 'regra') {

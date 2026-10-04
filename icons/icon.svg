@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#f5a524"/>
+  <!-- papeizinhos saindo do pote -->
+  <g stroke="#2a1d05" stroke-width="10" stroke-linejoin="round">
+    <rect x="150" y="96" width="96" height="140" rx="10" fill="#fff" transform="rotate(-18 198 166)"/>
+    <rect x="230" y="70" width="96" height="150" rx="10" fill="#fff" transform="rotate(6 278 145)"/>
+    <rect x="300" y="110" width="90" height="130" rx="10" fill="#fff" transform="rotate(24 345 175)"/>
+  </g>
+  <g stroke="#2a1d05" stroke-width="8" stroke-linecap="round">
+    <path d="M276 116 L316 120 M273 140 L307 143" transform="rotate(6 278 145)"/>
+  </g>
+  <!-- pote -->
+  <path d="M136 232 H376 V256 C376 270 368 276 360 280 C404 312 414 360 400 398 C386 436 340 452 256 452 C172 452 126 436 112 398 C98 360 108 312 152 280 C144 276 136 270 136 256 Z"
+        fill="#c8553d" stroke="#2a1d05" stroke-width="12" stroke-linejoin="round"/>
+  <path d="M130 352 C200 372 312 372 382 352" fill="none" stroke="#2a1d05" stroke-width="10" stroke-linecap="round" opacity=".55"/>
+  <path d="M120 392 C200 412 312 412 392 392" fill="none" stroke="#2a1d05" stroke-width="10" stroke-linecap="round" opacity=".55"/>
+</svg>

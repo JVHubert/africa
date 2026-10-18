@@ -106,6 +106,12 @@ try {
     const t = await tela();
     if (!vistas.has(t)) { vistas.add(t); await foto(`05-${t}`); }
     if (t === 'passagem') {
+      if (vezes === 0) {
+        const times = await page.$$eval('.lista-times li', (l) => l.map((x) => x.textContent.replace(/\s+/g, ' ').trim()));
+        const adivinham = await page.$eval('.adivinham', (el) => el.textContent.replace(/\s+/g, ' ').trim());
+        confere('primeira vez mostra quem está em cada time', times.length === 2 && times[0].includes('Ana e Caio'), JSON.stringify(times));
+        confere('mostra quem adivinha', adivinham.includes('Caio') && !adivinham.includes('Ana'), adivinham);
+      }
       await clicar('pronto');
       await page.waitForFunction(() => document.getElementById('app').dataset.tela === 'vez');
     } else if (t === 'vez') {

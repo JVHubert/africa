@@ -26,7 +26,7 @@ Quando o pote esvazia, a rodada acaba e **as mesmas palavras voltam** para a pr�
 2. **☝️ Uma palavra**: só UMA palavra de dica. Lembre-se do que foi dito na rodada 1!
 3. **🙌 Mímica**: só gestos, nada de som.
 
-E quem chegar até o fim da rodada 3 pode ter uma surpresa… 🤫
+Se o placar estiver apertado no fim da rodada 3, pode aparecer uma surpresa… 🤫
 
 Se o pote esvaziar no meio da sua vez, você começa a próxima rodada com o tempo que sobrou.
 

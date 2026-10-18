@@ -70,6 +70,16 @@ function placarMini() {
   </div>`;
 }
 
+const juntarNomes = (nomes) => (nomes.length > 1 ? `${nomes.slice(0, -1).join(', ')} e ${nomes.at(-1)}` : nomes[0] ?? '');
+const membros = (time) => estado.jogadores.filter((j) => j.time === time);
+
+/** Quem está em cada time, para ninguém ficar perdido. */
+function listaTimes() {
+  return `<ul class="lista-times">${estado.times.map((t, i) => `
+    <li style="--cor:${t.cor}"><i></i><b>${esc(t.nome)}</b><span>${esc(juntarNomes(membros(i).map((j) => j.nome)))}</span></li>`).join('')}
+  </ul>`;
+}
+
 function botaoMenu() {
   return '<button class="icone" data-acao="menu" aria-label="Menu">⋯</button>';
 }
@@ -291,12 +301,12 @@ function telaPassagem() {
   return `
   <section class="tela portao" style="--cor:${corTime(quem.time)}">
     <header class="topo"><span class="selo">${rotuloRodada()}</span>${botaoMenu()}</header>
-    ${placarMini()}
+    ${primeira ? listaTimes() : placarMini()}
     <div class="centro">
       ${primeira ? `<p class="destaque">Todas as ${estado.palavras.length} palavras estão no pote! 🎉</p>` : ''}
       <p>Vez de</p>
       <div class="nome-grande">${esc(quem.nome)}</div>
-      <p>Time ${nomeTime(quem.time)} adivinha</p>
+      <p class="adivinham">Quem adivinha: <b>${esc(juntarNomes(membros(quem.time).filter((j) => j.id !== quem.id).map((j) => j.nome)))}</b><br><small>Time ${nomeTime(quem.time)}</small></p>
       <p class="regra">${modo.icone} ${modo.regra}</p>
       <p class="info">${plural(estado.pote.length, 'palavra', 'palavras')} no pote${estado.sobraMs ? ` · começa com ${segundos(estado.sobraMs)} s que sobraram` : ''}</p>
     </div>
@@ -396,6 +406,7 @@ function telaFimRodada() {
 
 function telaConvite() {
   const modo = MODOS[J.MODO_SECRETO];
+  const disputa = J.disputaApertada(estado);
   return `
   <section class="tela convite">
     <header class="topo"><span class="selo">Fim da rodada ${estado.rodada + 1}</span>${botaoMenu()}</header>
@@ -403,8 +414,8 @@ function telaConvite() {
     ${tabelaPlacar()}
     <div class="segredo">
       <div class="cadeado">🤫</div>
-      <h3>Psiu… existe uma rodada secreta!</h3>
-      <p>As mesmas palavras voltam para o pote mais uma vez, agora com a regra mais difícil de todas:</p>
+      <h3>Placar apertado! Hora da rodada secreta</h3>
+      <p>${disputa.diferenca === 0 ? 'Deu empate.' : `Só ${plural(disputa.diferenca, 'ponto separa', 'pontos separam')} os primeiros colocados.`} Para desempatar, as mesmas palavras voltam para o pote mais uma vez, com a regra mais difícil de todas:</p>
       <p class="regra">${modo.icone} ${modo.regra}</p>
       <p>Topam?</p>
     </div>
@@ -468,6 +479,7 @@ function abrirMenu() {
     <h2>Menu</h2>
     <div class="acoes">
       <button class="btn secundario" data-acao="regras">Como jogar</button>
+      ${emJogo ? '<button class="btn secundario" data-acao="ver-times">Ver os times</button>' : ''}
       ${emJogo && estado.fase !== 'escrita' && estado.fase !== 'fim' ? '<button class="btn secundario" data-acao="pedir-terminar">Terminar o jogo agora</button>' : ''}
       ${emJogo ? '<button class="btn secundario" data-acao="pedir-abandonar">Abandonar e voltar ao início</button>' : ''}
       <button class="btn primario" data-acao="fechar">Voltar ao jogo</button>
@@ -623,6 +635,9 @@ const acoes = {
     window.scrollTo(0, 0);
   },
   regras() { abrirCamada(REGRAS); },
+  'ver-times'() {
+    abrirCamada(`<h2>Os times</h2>${listaTimes()}<button class="btn primario" data-acao="fechar">Voltar ao jogo</button>`);
+  },
   menu() { abrirMenu(); },
   fechar() { fecharCamada(); },
 

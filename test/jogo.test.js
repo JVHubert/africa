@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   CONFIG_PADRAO, acertou, alternar, comecarRodada, confirmarVez, duracaoEstimada, entregarPalavras,
   estatisticas, explicadorAtual, falta, iniciarVez, jaNoPote, novoJogo, palavrasDaVez, placar, pular,
-  revanche, sortearTimes, tempoEsgotado, validar, vencedores, aceitarRodadaSecreta, recusarRodadaSecreta,
+  revanche, sortearTimes, tempoEsgotado, validar, vencedores, aceitarRodadaSecreta, recusarRodadaSecreta, disputaApertada,
 } from '../jogo.js';
 
 /** Gerador previsível (mulberry32) para os sorteios darem sempre o mesmo resultado. */
@@ -223,16 +223,51 @@ function jogarRodadas(e) {
   return e;
 }
 
-test('rodada secreta: oferecida só no fim da 3ª rodada', () => {
-  let e = jogarRodadas(jogoPronto({ sobraDeTempo: false }));
+/** Cada vez acerta 4 palavras e o tempo acaba: os times empatam rodada a rodada. */
+function jogarEquilibrado(e) {
+  while (e.fase === 'passagem' || e.fase === 'fimRodada') {
+    if (e.fase === 'fimRodada') e = comecarRodada(e);
+    e = iniciarVez(e);
+    for (let i = 0; i < 4 && e.fase === 'vez'; i++) e = acertou(e, 1000 * (i + 1));
+    if (e.fase === 'vez') e = tempoEsgotado(e);
+    e = confirmarVez(e);
+  }
+  return e;
+}
+
+test('rodada secreta: placar folgado vai direto para o resultado', () => {
+  const e = jogarRodadas(jogoPronto({ sobraDeTempo: false }));
+  assert.deepEqual(placar(e).map((l) => l.total), [16, 8]);
+  assert.equal(disputaApertada(e).apertada, false);
+  assert.equal(e.fase, 'fim');
+});
+
+test('rodada secreta: oferecida como desempate quando o placar está apertado', () => {
+  let e = jogarEquilibrado(jogoPronto({ sobraDeTempo: false }));
   assert.equal(e.fase, 'convite');
+  assert.deepEqual(disputaApertada(e), { apertada: true, diferenca: 0, limite: 2 });
   assert.equal(recusarRodadaSecreta(e).fase, 'fim');
   e = aceitarRodadaSecreta(e);
   assert.equal(e.fase, 'fimRodada');
   assert.deepEqual(e.config.modos, ['explicar', 'uma-palavra', 'mimica', 'sons']);
   assert.equal(e.pote.length, 8);
-  e = jogarRodadas(e);
-  assert.equal(e.fase, 'fim');
+  e = jogarEquilibrado(e);
+  assert.equal(e.fase, 'fim'); // não oferece de novo
   assert.equal(placar(e)[0].porRodada.length, 4);
   assert.equal(placar(e).reduce((s, l) => s + l.total, 0), 32);
+});
+
+test('placar apertado: até 10% das palavras do pote de diferença', () => {
+  const base = jogoPronto();
+  const comPontos = (azul, vermelho, nPalavras) => ({
+    ...base,
+    palavras: Array.from({ length: nPalavras }, (_, id) => ({ id, texto: `p${id}`, autor: 0 })),
+    historico: [
+      { rodada: 0, jogador: 0, time: 0, eventos: Array(azul).fill({ tipo: 'acerto', palavra: 0 }) },
+      { rodada: 0, jogador: 1, time: 1, eventos: Array(vermelho).fill({ tipo: 'acerto', palavra: 0 }) },
+    ],
+  });
+  assert.equal(disputaApertada(comPontos(95, 89, 60)).apertada, true);   // 6 de 60 palavras
+  assert.equal(disputaApertada(comPontos(96, 89, 60)).apertada, false);  // 7
+  assert.equal(disputaApertada(comPontos(10, 8, 8)).apertada, true);     // mínimo de 2
 });

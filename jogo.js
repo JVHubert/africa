@@ -298,7 +298,7 @@ export function confirmarVez(estado, rand = Math.random) {
   if (e.rodada + 1 >= e.config.modos.length) {
     // Acabaram as rodadas escolhidas: antes do resultado, oferece a rodada secreta.
     e.sobraMs = sobra;
-    e.fase = e.config.modos.includes(MODO_SECRETO) ? 'fim' : 'convite';
+    e.fase = !e.config.modos.includes(MODO_SECRETO) && disputaApertada(e).apertada ? 'convite' : 'fim';
     return e;
   }
   proximaRodada(e, sobra, rand);
@@ -352,6 +352,17 @@ export function placar(estado) {
     linhas[h.time].total += n;
   }
   return linhas;
+}
+
+/**
+ * A rodada secreta é um desempate: só aparece se os dois primeiros colocados estiverem
+ * perto. "Perto" = diferença de até 10% das palavras do pote (mínimo 2 pontos).
+ */
+export function disputaApertada(estado) {
+  const [primeiro, segundo] = placar(estado).map((l) => l.total).sort((a, b) => b - a);
+  const diferenca = primeiro - segundo;
+  const limite = Math.max(2, Math.round(estado.palavras.length * 0.1));
+  return { apertada: diferenca <= limite, diferenca, limite };
 }
 
 /** Vencedores (mais de um = empate). */

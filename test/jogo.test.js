@@ -271,3 +271,18 @@ test('placar apertado: até 10% das palavras do pote de diferença', () => {
   assert.equal(disputaApertada(comPontos(96, 89, 60)).apertada, false);  // 7
   assert.equal(disputaApertada(comPontos(10, 8, 8)).apertada, true);     // mínimo de 2
 });
+
+test('apito: a palavra da tela não é a primeira do próximo time, e o pote é sorteado de novo', () => {
+  const ordens = new Set();
+  for (let s = 1; s <= 40; s++) {
+    let e = iniciarVez(jogoPronto());
+    const naTela = e.vez.atual;
+    e = tempoEsgotado(e);
+    e = confirmarVez(e, semente(s));
+    assert.equal(e.pote.length, 8);
+    e = iniciarVez(e);
+    assert.notEqual(e.vez.atual, naTela);
+    ordens.add(e.vez.atual);
+  }
+  assert.ok(ordens.size > 2); // a próxima palavra varia: é sorteio, não fila
+});

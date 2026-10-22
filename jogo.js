@@ -271,6 +271,19 @@ export function alternar(estado, id) {
   return e;
 }
 
+/**
+ * Entre uma vez e outra o pote é embaralhado de novo, para o próximo time pegar uma palavra
+ * sorteada. A que estava na tela no apito (`evitar`) nunca é a primeira, se houver outra.
+ */
+function sortearPote(pote, evitar, rand) {
+  const p = embaralhar(pote, rand);
+  if (p.length > 1 && p[0] === evitar) {
+    const j = 1 + Math.floor(rand() * (p.length - 1));
+    [p[0], p[j]] = [p[j], p[0]];
+  }
+  return p;
+}
+
 function avancarOrdem(e) {
   e.ordem.proximo[e.ordem.time]++;
   e.ordem.time = (e.ordem.time + 1) % e.times.length;
@@ -289,6 +302,7 @@ export function confirmarVez(estado, rand = Math.random) {
   });
   e.vez = null;
   if (e.pote.length) {
+    e.pote = sortearPote(e.pote, v.fim === 'tempo' ? v.atual : null, rand);
     avancarOrdem(e);
     e.fase = 'passagem';
     return e;
